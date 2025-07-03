@@ -1,0 +1,116 @@
+﻿
+@model List<DoAnChuyenNganh_HeThongTrungTamTinHoc.ViewModels.HocVienViewModel>
+@{
+    ViewBag.Title = "Chi tiết lớp học";
+    Layout = "~/Views/Shared/_GiangVien.cshtml";
+}
+
+<style>
+    table th, table td {
+        text-align: center;
+    }
+</style>
+
+<div class="d-flex float-start">
+    <a href="@Url.Action("DanhSachLopHoc", "GiangVien")" class="btn btn-primary mb-2">Quay lại</a>
+</div>
+
+<main class="container-fluid">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (Model == null || !Model.Any())
+    {
+        <div class="container mt-5">
+            <h3 class="text-center text-danger">Lớp học này chưa được bắt đầu!!!</h3>
+        </div>
+    }
+    else
+    {
+        <h2 class="text-center">Bảng điểm lớp <span style="color: orangered;">@ViewBag.TenLop</span></h2>
+        <form action="@Url.Action("CapNhatDiem", "GiangVien")" method="post">
+            <input type="hidden" name="malh" value="@ViewBag.MaLop" />
+            <table class="table table-bordered table-hover">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Mã học viên</th>
+                        <th>Tên học viên</th>
+                        <th>Điểm KTL 1</th>
+                        <th>Điểm KTL 2</th>
+                        <th>Điểm KTL 3</th>
+                        <th>Điểm trung bình</th>
+                        <th>Số buổi vắng</th>
+                        <th>Kết quả</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Model[i].MaHV
+                                <input type="hidden" name="HocVienList[@i].MaHV" value="@Model[i].MaHV" />
+                            </td>
+                            <td>@Model[i].HoTen</td>
+                            <td>
+                                <input type="number" step="0.01" name="HocVienList[@i].DiemKiemTraLan1" value="@Model[i].DiemKiemTraLan1" class="form-control" min="0" max="10"
+                                       oninvalid="this.setCustomValidity('Vui lòng nhập điểm từ 0 đến 10')"
+                                       oninput="this.setCustomValidity('')"
+                                       />
+                            </td>
+                            <td>
+                                <input type="number" step="0.01" name="HocVienList[@i].DiemKiemTraLan2" value="@Model[i].DiemKiemTraLan2" class="form-control" min="0" max="10"
+                                       oninvalid="this.setCustomValidity('Vui lòng nhập điểm từ 0 đến 10')"
+                                       oninput="this.setCustomValidity('')"
+                                       />
+                            </td>
+                            <td>
+                                <input type="number" step="0.01" name="HocVienList[@i].DiemKiemTraLan3" value="@Model[i].DiemKiemTraLan3" class="form-control" min="0" max="10"
+                                       oninvalid="this.setCustomValidity('Vui lòng nhập điểm từ 0 đến 10')"
+                                       oninput="this.setCustomValidity('')"
+                                       />
+                            </td>
+                            <td>
+                                @Model[i].DiemTrungBinh
+                            </td>
+                            <td>
+                                @Model[i].Sobuoivang
+                            </td>
+                            <td>
+                                @Model[i].KetQua
+                            </td>
+                            <td>
+                                @if (Model[i].ChoPhepNhapDiem == false)
+                                {
+                                    <button type="submit" class="btn btn-primary" style="width: 100px;" onclick="return xacNhanCapNhat()" disabled>Cập nhật</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-primary" style="width: 100px;" onclick="return xacNhanCapNhat()">Cập nhật</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
+    }
+</main>
+
+<script>
+    function xacNhanCapNhat() {
+        return confirm("Bạn có chắc chắn muốn cập nhật thông tin này?");
+    }
+</script>

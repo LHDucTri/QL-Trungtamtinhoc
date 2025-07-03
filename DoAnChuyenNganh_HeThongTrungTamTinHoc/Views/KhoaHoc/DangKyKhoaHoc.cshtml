@@ -1,0 +1,138 @@
+﻿@model DoAnChuyenNganh_HeThongTrungTamTinHoc.Models.KhoaHoc
+@{
+    ViewBag.Title = "Đăng ký khóa học";
+    Layout = "~/Views/Shared/_Main.cshtml";
+}
+
+<div class="container-fluid py-5">
+    <div class="card mb-3 mx-auto shadow-lg border-0" style="max-width: 1024px; border-radius: 12px; background-color: #f8f9fa;">
+        <div class="row g-0">
+            <div class="col-md-12 text-center py-4">
+                <h2 class="text-danger fw-bold" style="font-size: 2.5em;">Đăng ký khóa học</h2>
+            </div>
+        </div>
+        <div class="row g-0">
+            <div class="col-md-6">
+                <img src="~/images/@Model.Anh" class="img-fluid rounded-start" alt="Course image" style="width: 100%; object-fit: cover;">
+            </div>
+            <div class="col-md-6 d-flex align-items-center p-4" style="background-color: #0066b3;">
+                <div class="card-body text-white">
+                    <h5 class="card-title mb-3 fw-bold" id="tenkh" style="font-size: 1.8em;">@Model.TenKH</h5>
+                    <p class="card-text mb-2">Chương trình học: <span class="text-warning">@Model.ChuongTrinhHoc.TenChuongTrinh</span></p>
+                    <p class="card-text mb-2">Ngày khai giảng: <span class="text-warning">@Model.NgayBatDau.ToString("dd/MM/yyyy")</span></p>
+                    <p class="card-text mb-2">Ngày kết thúc: <span class="text-warning">@Model.NgayKetThuc</span></p>
+                    <p class="card-text mb-2">Số buổi học: <span class="text-warning">@Model.Sobuoihoc</span></p>
+                    <p class="card-text mb-2">Học phí: <span class="text-warning">@string.Format("{0:N0} VND", Model.HocPhi)</span></p>
+                    <p class="card-text mb-2">Loại khóa học: <span class="text-warning">@Model.LoaiKH</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h2 class="text-center mb-4 fw-bold" style="color: #0066b3;">Thông tin đăng ký</h2>
+    <form id="formDangKy" class="border p-4 rounded shadow-lg bg-light">
+        <input type="hidden" name="MaKH" value="@Model.MaKH" />
+        <div class="mb-3">
+            <label for="hoTen" class="form-label">Họ Tên</label>
+            <input type="text" class="form-control" id="hoTen" name="HoTen" required placeholder="Nhập họ tên">
+        </div>
+
+        <div class="mb-3">
+            <label for="ngaySinh" class="form-label">Ngày Sinh</label>
+            <input type="date" class="form-control" id="ngaySinh" name="NgaySinh" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="gioiTinh" class="form-label">Giới Tính</label>
+            <select class="form-select" id="gioiTinh" name="GioiTinh" required>
+                <option value="" disabled selected>Chọn giới tính</option>
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="Email" required placeholder="Nhập email">
+        </div>
+
+        <div class="mb-3">
+            <label for="soDT" class="form-label">Số Điện Thoại</label>
+            <input type="tel" class="form-control" id="soDT" name="SoDT" required placeholder="Nhập số điện thoại" pattern="^(03|05|07|08|09)\d{8}$">
+        </div>
+
+        <div class="mb-3">
+            <label for="diaChi" class="form-label">Địa Chỉ</label>
+            <textarea class="form-control" id="diaChi" name="DiaChi" rows="3" required placeholder="Nhập địa chỉ"></textarea>
+        </div>
+
+        <div class="text-center mb-4">
+            <h4 class="text-primary fw-bold">Thanh toán ngay với <i class="fa-brands fa-cc-stripe"></i></h4>
+            <button type="button" id="btnCheckout" class="btn btn-primary btn-lg">
+                <i class="fa-brands fa-cc-stripe"></i> Thanh Toán
+            </button>
+        </div>
+
+        <input type="hidden" id="paymentStatus" name="PaymentStatus" value="false" />
+    </form>
+</div>
+
+<div class="container">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+    document.getElementById("btnCheckout").addEventListener("click", function () {
+        var email = document.getElementById("email").value;
+        var soDT = document.getElementById("soDT").value;
+
+        var dinhdangemail = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!dinhdangemail.test(email)) {
+            alert("Email không hợp lệ. Vui lòng nhập đúng định dạng email.");
+            event.preventDefault();
+            return;
+        }
+
+        var dinhdangsodt = /^(03|05|07|08|09)\d{8}$/;
+        if (!dinhdangsodt.test(soDT)) {
+            alert("Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng số điện thoại.");
+            event.preventDefault();
+            return;
+        }
+
+        var formData = new FormData(document.getElementById("formDangKy"));
+
+        fetch("@Url.Action("DangKyKhoaHoc", "KhoaHoc", new { makh = Model.MaKH })", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sessionId) {
+                var stripe = Stripe("pk_test_51PhnwG2KZcPzxihVAIYjp6TV5aZXdbHvsV1JV4nNuXPyM5lZGRKFU9FJBfcWO8PzTsMnqoVNsE5lmHPhvPBafqnw00jIoSkjVE");
+                stripe.redirectToCheckout({ sessionId: data.sessionId });
+            } else {
+                alert("Có lỗi xảy ra: " + data.errorMessage);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Không thể thực hiện thanh toán.");
+        });
+    });
+</script>

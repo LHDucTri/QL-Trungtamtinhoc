@@ -1,0 +1,166 @@
+﻿@{
+    ViewBag.Title = "Thông Tin Thanh Toán";
+    Layout = "~/Views/Shared/_HocVien.cshtml";
+}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var images = document.querySelectorAll(".img-hover-zoom");
+        images.forEach(function (image) {
+            image.addEventListener("mouseenter", function () {
+                image.style.transform = "scale(1.1)";
+            });
+            image.addEventListener("mouseleave", function () {
+                image.style.transform = "scale(1)";
+            });
+        });
+    });
+</script>
+
+<style>
+    .img-hover-zoom {
+        transition: transform 0.3s ease;
+        width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        object-fit: cover;
+        height: 250px;
+        width: 200px;
+    }
+
+    .img-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 150px;
+        height: 150px;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+
+    .img-hover-zoom:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary, .btn-success {
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+
+    .container {
+        /*background-color: #f8f9fa;*/
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2, h4 {
+        color: #007bff;
+    }
+
+    .alert {
+        font-size: 1.1em;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        padding-left: 20px;
+    }
+
+    li {
+        margin-bottom: 10px;
+    }
+</style>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success text-center">
+        @TempData["Message"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2><strong>Thông Tin Thanh Toán</strong></h2>
+            <hr />
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Thông Tin Chuyển Khoản</h4>
+            <p>Vui lòng chuyển khoản theo thông tin dưới đây:</p>
+            <ul>
+                <li><strong>Ngân hàng:</strong> MB Bank</li>
+                <li><strong>Số tài khoản:</strong> 0386826641</li>
+                <li><strong>Tên tài khoản:</strong> Lê Hồng Đức Trí</li>
+                <li><strong>Nội dung chuyển khoản:</strong> [Thanh toán học phí] - [Mã Học Viên] - [Mã Khóa Học] - [Thời Gian Chuyển Khoản]</li>
+                <li><strong>Liên hệ nhân viên qua Zalo:</strong> 0386826641</li>
+                <li><strong>Liên hệ qua Gmail:</strong> lehongductri2911@gmail.com</li>
+            </ul>
+        </div>
+
+        <div class="col-md-6 text-center">
+            <h4>Mã QR Chuyển Khoản</h4>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>Ngân Hàng</h5>
+                    <a href="~/AnhHocVien/Anhnganhang2.jpg" target="_blank">
+                        <img src="~/AnhHocVien/Anhnganhang2.jpg" alt="Mã QR Ngân Hàng" class="img-hover-zoom" />
+                    </a>
+                    <a href="~/AnhHocVien/Anhnganhang2.jpg" download class="btn btn-primary mt-2">Tải về</a>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <h5>Momo</h5>
+                    <a href="~/AnhHocVien/Anhmomo.jpg" target="_blank">
+                        <img src="~/AnhHocVien/Anhmomo.jpg" alt="Mã QR Momo" class="img-hover-zoom" />
+                    </a>
+                    <a href="~/AnhHocVien/Anhmomo.jpg" download class="btn btn-primary mt-2">Tải về</a>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <h5>Viettel Money</h5>
+                    <a href="~/AnhHocVien/AnhViettelMoney.jpg" target="_blank">
+                        <img src="~/AnhHocVien/AnhViettelMoney.jpg" alt="Mã QR Viettel Money" class="img-hover-zoom" />
+                    </a>
+                    <a href="~/AnhHocVien/AnhViettelMoney.jpg" download class="btn btn-primary mt-2">Tải về</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12 text-center">
+            <h5>Xác nhận thanh toán sau khi đã hoàn thành giao dịch</h5>
+            <form action="@Url.Action("XacNhanThanhToan", "HocVien")" method="post">
+                <button type="submit" class="btn btn-success mt-3">Xác Nhận Đã Thanh Toán</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12 text-center">
+            <a href="@Url.Action("Index", "HocVien")" class="btn btn-primary mt-3">Quay về trang chủ</a>
+        </div>
+    </div>
+</div>
